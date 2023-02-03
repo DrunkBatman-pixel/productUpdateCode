@@ -1,0 +1,47 @@
+public with sharing class productController
+{
+    public static string OPT1 = '<=3-1/2”';
+    public static string OPT2 = '>3-1/2 - <5-1/2”';
+    public static string OPT3 = '=5-1/2”';
+    public static string OPT4 = '>5-1/2” - <= 8-5/8”';  
+    public static string OPT5 = '>8-5/8” - <=10-3/4”';
+    public static string OPT6 = '>10-3/4”';
+
+
+    public static void updateProductObject()
+    {
+        
+        List<product2> updateProdList = new List<product2>();
+        for(product2 productObj:[SELECT name,od_range__c,outer_Diameter__C FROM product2 WHERE outer_Diameter__c != null])
+        {
+            if(productObj.outer_Diameter__C <= 3.5)
+            {
+                productObj.od_range__c = OPT1;
+            }
+            else if(productObj.outer_Diameter__C > 3.5 && productObj.outer_Diameter__C < 5.5)
+            {
+                productObj.od_range__c = OPT2;
+            }
+            else if(productObj.outer_Diameter__C == 5.5)
+            {
+                productObj.od_range__c = OPT3;
+            }
+            else if(productObj.outer_Diameter__C > 5.5 && productObj.outer_Diameter__C <= 8.625)
+            {
+                productObj.od_range__c = OPT4;
+            }
+            else if(productObj.outer_Diameter__C > 8.625 && productObj.outer_Diameter__C <= 10.75)
+            {
+                productObj.od_range__c = OPT5 ;
+            }
+
+            else if(productObj.outer_Diameter__C > 10.75)
+            {
+                productObj.od_range__c = OPT6;
+            }
+            updateProdList.add(productObj);
+        }
+        Database.SaveResult[] srList = Database.update(updateProdList, false);
+        System.debug(srList);      
+    }
+}
